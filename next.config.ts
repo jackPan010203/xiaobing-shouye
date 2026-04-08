@@ -1,24 +1,8 @@
-import type { NextConfig } from 'next';
-import path from 'path';
+import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
-  // outputFileTracingRoot: path.resolve(__dirname, '../../'),
-  /* config options here */
-  allowedDevOrigins: ['*.dev.coze.site'],
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'lf-coze-web-cdn.coze.cn',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'coze-coding-project.tos.coze.site',
-        pathname: '/**',
-      },
-    ],
-  },
-};
+  // 这里是最稳定的标准配置，不需要额外的静态导出
+  // Vercel 自动部署会完美适配
+}
 
-export default nextConfig;
+export default nextConfig

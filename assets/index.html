@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>正在发起支付 - 小兵速帮</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f9ff;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .loader {
+      margin-bottom: 30px;
+      border: 6px solid #e0f2f1;
+      border-top: 6px solid #4caf50;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 5px;
+    }
+
+    .merchant {
+      font-size: 15px;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader"></div>
+  <h2>正在发起微信支付</h2>
+  <p>请勿关闭页面...</p>
+  <div class="merchant">商户：小兵速帮</div>
+
+  <script src="https://res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
+  <script>
+    function getQueryParams() {
+      const params = {};
+      const search = window.location.search.substring(1);
+      search.split("&").forEach(part => {
+        const [key, value] = part.split("=");
+        params[key] = decodeURIComponent(value);
+      });
+      return params;
+    }
+
+    const query = getQueryParams();
+
+    wx.config({
+      debug: false,
+      appId: query.appId,
+      timestamp: parseInt(query.timeStamp),
+      nonceStr: query.nonceStr,
+      signature: query.paySign,
+      jsApiList: ['chooseWXPay']
+    });
+
+    wx.ready(function () {
+      wx.chooseWXPay({
+        timestamp: parseInt(query.timeStamp),
+        nonceStr: query.nonceStr,
+        package: query.package,
+        signType: query.signType,
+        paySign: query.paySign,
+        success: function () {
+          window.location.href = '/wechat/payment/success.html';
+        },
+        cancel: function () {
+          window.location.href = '/wechat/payment/cancel.html';
+        },
+        fail: function () {
+          window.location.href = '/wechat/payment/fail.html';
+        }
+      });
+    });
+
+    wx.error(function (res) {
+      alert("微信配置失败：" + res.errMsg);
+    });
+  </script>
+</body>
+</html>
